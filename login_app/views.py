@@ -5,10 +5,23 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+
+from django.contrib.auth.models import User
+from login_app.models import UserInfo
 # Create your views here.
 
 def index(request):
     diction = {'title':"Home"}
+    if request.user.is_authenticated:
+        current_user = request.user
+        user_id = current_user.id
+        user_basic_info = User.objects.get(pk = user_id)
+        user_more_info = UserInfo.objects.get(user__pk = user_id) #for relational database we use (base model__pk=usier id)
+        diction.update({'user_basic_info':user_basic_info, 'user_more_info':user_more_info})
+        # print(current_user.username)
+        # print(current_user.email)
+        # print(current_user.id)
+        # print(request)
     return render(request, 'login_app/index.html', context=diction)
 
 def register(request):
