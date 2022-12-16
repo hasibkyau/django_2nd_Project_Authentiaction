@@ -24,7 +24,7 @@ def register(request):
             user.set_password(user.password)
             user.save()
 
-            user_info = user_info_form.save(commit=False)
+            user_info = user_info_form.save(commit=False) #commt false will not update the database
             user_info.user = user
 
             if 'profile_pic' in request.FILES:
@@ -61,4 +61,12 @@ def user_login(request):
             return HttpResponse("Login Details are Wrong!")
 
     else:
-        return render(request, 'login_app/login.html', context={})
+        # return render(request, 'login_app/login.html', context={})
+        return HttpResponseRedirect(reverse('login_app:login'))
+
+
+@login_required #it checks if the user has loged in or not.
+# If the user staus is login then the user_logout will call otherwise not
+def user_logout(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('login_app:index'))
